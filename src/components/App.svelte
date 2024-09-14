@@ -1,30 +1,21 @@
-<script lang=js>
+<script>
     import { onMount } from 'svelte'
-    import { Loader } from '@googlemaps/js-api-loader'
-    
-    const loader = new Loader({
-        apiKey: "API_KEY_HERE",
-        version: "weekly"
-    });
-      
-    onMount(async () => {
-        await loader.load()
+    import { drawPolygon, perimeterPoints, getTSPPoints } from '../js/mesh.js'
 
-        const { Map } = await google.maps.importLibrary("maps");
-        
-        map = new Map(document.getElementById("map"), {
-            center: { lat: -34.397, lng: 150.644 },
-            zoom: 8,
-        });
+    let canvas
+
+    onMount(() => {
+        let mowerWidth = 12
+        drawPolygon(canvas, perimeterPoints, 'red')
+        const points = getTSPPoints(perimeterPoints, mowerWidth)
+        drawPolygon(canvas, points, 'gray')
     })
 </script>
 
-
-<div id="map"></div>
+<canvas bind:this={canvas} width=600, height=400></canvas>
 
 <style>
-    #map {
-        height: 400px;
+    canvas {
         width: 100%;
     }
 </style>
