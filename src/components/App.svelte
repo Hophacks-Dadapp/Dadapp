@@ -5,6 +5,7 @@
 
     import { getTSPPoints } from '../js/mesh.js'
     import { findMinRoute } from '../js/tsp.js'
+    import { getDadJokes } from '../js/getdadjokes.js'
 
     let map;
     let drawingManager;
@@ -17,7 +18,7 @@
     let noStepZonePolygons = []; // To store the drawn polygons for no-step zones
     let lawnBoundaryDrawn = false; // Track if the lawn boundary has been drawn
     let boundaryBounds; // To store the boundary bounding box
-    let canvas
+    let jokesBox
 
     // Conversion factor from degrees to meters (approximate near the equator)
     const metersPerDegreeLat = 111320; // 1 degree of latitude = ~111.32 km or ~111,320 meters
@@ -32,6 +33,11 @@
 
 
     onMount(async () => {
+        jokesBox.innerText = await getDadJokes()
+        setInterval(async () => {
+            jokesBox.innerText = await getDadJokes()
+        }, 10000)
+
         try {
             // Wait for Google Maps API to load
             await loader.load();
@@ -241,7 +247,7 @@
     <div class="map-and-coordinates">
         <!-- Map display -->
         <div id="map"></div>
-        <div class="jokes"></div>
+        <div class="jokes" bind:this={jokesBox}></div>
     </div>
 
 
@@ -262,6 +268,10 @@
 </div>
 
 <style>
+    *, *::before, *::after {
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    }
+
     .container {
         display: flex;
         flex-direction: column;
