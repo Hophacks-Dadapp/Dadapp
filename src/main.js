@@ -1,4 +1,4 @@
-import App from './components/Canvas.svelte'
+import App from './components/map.svelte'
 
 const app = new App({
   target: document.getElementById('app'),
