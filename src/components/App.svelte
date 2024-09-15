@@ -1,6 +1,7 @@
 <script>
     import {onMount} from 'svelte';
     import {Loader} from '@googlemaps/js-api-loader';
+    import Title from './title.svelte';
 
     let map;
     let drawingManager;
@@ -20,7 +21,7 @@
 
     // Initialize Google Maps loader with your API key
     const loader = new Loader({
-        apiKey: 'AIzaSyDuDeowNpEBV4X_4VYjcdRlXbiaMsg2B-E\n', // Replace with your actual API key
+        apiKey: 'AIzaSyDGQHZVLc3VvgZpSPF47uNF1CHJFEUvr68', // Replace with your actual API key
         version: 'weekly',
         libraries: ['drawing', 'geometry', 'places'] // Load the necessary libraries
     });
@@ -222,47 +223,117 @@
         }
     }
 </script>
-
+<Title />
 <!-- Input to go to a specific address -->
-<div>
-    <input type="text" bind:value={address} placeholder="Enter address"/>
-    <button on:click={geocodeAddress}>Go to Address</button>
-</div>
+<div class="container">
+    <div class="map-and-coordinates">
+        <!-- Map display -->
+        <div id="map"></div>
 
-<!-- Buttons to toggle drawing modes -->
-<div>
-    <button on:click={() => toggleDrawingMode('boundary')}>Draw Lawn Boundary</button>
-    <button on:click={() => toggleDrawingMode('no-step')} disabled={!lawnBoundaryDrawn}>Draw No-Step Zone</button>
-    <button on:click={clearAllPolygons}>Clear All</button>
-</div>
+        <!-- Display X, Y coordinates -->
+        <div class="coordinates">
+            <h3>Lawn Boundary (X, Y Coordinates):</h3>
+            {#each boundaryCoordinates as coordinate}
+                <p>X: {coordinate.x.toFixed(2)}, Y: {coordinate.y.toFixed(2)}</p>
+            {/each}
 
-<!-- Map display -->
-<div id="map" style="height: 400px; width: 100%;"></div>
+            <h3>No-Step Zones (X, Y Coordinates):</h3>
+            {#each noStepZones as zone}
+                <h4>No-Step Zone:</h4>
+                {#each zone as coordinate}
+                    <p>X: {coordinate.x.toFixed(2)}, Y: {coordinate.y.toFixed(2)}</p>
+                {/each}
+            {/each}
+        </div>
+    </div>
 
-<!-- Instructions for the user -->
-<div>
-    <p>{message}</p>
-</div>
+    <div class="controls">
+        <input type="text" bind:value={address} placeholder="Enter address" class="address-input"/>
+        <button on:click={geocodeAddress} class="action-button">Go to Address</button>
+    </div>
 
-<!-- Display X, Y coordinates -->
-<div>
-    <h3>Lawn Boundary (X, Y Coordinates):</h3>
-    {#each boundaryCoordinates as coordinate}
-        <p>X: {coordinate.x.toFixed(2)}, Y: {coordinate.y.toFixed(2)}</p>
-    {/each}
+    <div class="drawing-controls">
+        <button on:click={() => toggleDrawingMode('boundary')} class="action-button">Draw Lawn Boundary</button>
+        <button on:click={() => toggleDrawingMode('no-step')} class="action-button" disabled={!lawnBoundaryDrawn}>Draw No-Step Zone</button>
+        <button on:click={clearAllPolygons} class="action-button">Clear All</button>
+    </div>
 
-    <h3>No-Step Zones (X, Y Coordinates):</h3>
-    {#each noStepZones as zone}
-        <h4>No-Step Zone:</h4>
-        {#each zone as coordinate}
-            <p>X: {coordinate.x.toFixed(2)}, Y: {coordinate.y.toFixed(2)}</p>
-        {/each}
-    {/each}
+    <div class="instructions">
+        <p>{message}</p>
+    </div>
 </div>
 
 <style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin: 20px;
+    }
+
+    .map-and-coordinates {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
     #map {
         height: 400px;
-        width: 100%;
+        width: 60%;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .coordinates {
+        width: 35%;
+        text-align: left;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .controls, .drawing-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .address-input {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .action-button {
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #007bff;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+
+    .action-button:disabled {
+        background-color: #ccc;
+        border-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .instructions {
+        text-align: center;
+    }
+
+    .coordinates h3 {
+        margin-top: 20px;
+        color: #333;
+    }
+
+    .coordinates p {
+        margin: 5px 0;
+        color: #666;
     }
 </style>
