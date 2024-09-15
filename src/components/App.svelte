@@ -2,7 +2,7 @@
     import {onMount} from 'svelte';
     import {Loader} from '@googlemaps/js-api-loader';
 
-    import { getTSPPoints, drawPath } from '../js/mesh.js'
+    import { getTSPPoints } from '../js/mesh.js'
     import { findMinRoute } from '../js/tsp.js'
 
     let map;
@@ -169,7 +169,8 @@
 
         if (type === 'boundary') {
             boundaryCoordinates = convertedCoordinates;
-            drawPath(canvas, getTSPPoints(boundaryCoordinates, 1))
+            // these are the path coordinates
+            const path = getTSPPoints(boundaryCoordinates, 1)
 
         } else if (type === 'no-step') {
             noStepZones = [...noStepZones, convertedCoordinates];
