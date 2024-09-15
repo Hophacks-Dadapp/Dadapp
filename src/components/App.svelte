@@ -1,18 +1,24 @@
 <script>
     import { onMount } from 'svelte'
-    import { drawPolygon, perimeterPoints, getTSPPoints } from '../js/mesh.js'
+    import { drawPoints, perimeterPoints, getTSPPoints, drawPath, insetPoints } from '../js/mesh.js'
+    import { findMinRoute } from '../js/tsp.js';
 
     let canvas
 
     onMount(() => {
-        let mowerWidth = 12
-        drawPolygon(canvas, perimeterPoints, 'red')
+        let mowerWidth = 20
+        drawPoints(canvas, perimeterPoints, 'red')
         const points = getTSPPoints(perimeterPoints, mowerWidth)
-        drawPolygon(canvas, points, 'gray')
+        drawPoints(canvas, points, 'gray')
+
+        drawPath(canvas, findMinRoute(points), mowerWidth, 'blue')
+        drawPath(canvas, findMinRoute(points))
+        
+        drawPath(canvas, perimeterPoints)
     })
 </script>
 
-<canvas bind:this={canvas} width=600, height=400></canvas>
+<canvas bind:this={canvas} width=1000, height=800></canvas>
 
 <style>
     canvas {

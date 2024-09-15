@@ -1,4 +1,5 @@
 import blueNoise from "../assets/bluenoise.json"
+
 const bnPoints = blueNoise.points
 
 export const perimeterPoints = [
@@ -9,7 +10,7 @@ export const perimeterPoints = [
     { x: 51, y: 32 },
     { x: 31, y: 38 },
     { x: 25, y: 23 },
-].map(p => { return { x: p.x * 4, y: p.y * 4} })
+].map(p => { return { x: p.x * 8, y: p.y * 8} })
 
 const findInsetLine = (p1, p2, offsetWidth) => {
     const dx = (p2.x - p1.x), dy = (p2.y - p1.y)
@@ -131,16 +132,32 @@ const drawCircle = (ctx, x, y, color = 'red', radius = 2) => {
     ctx.fill()
 }
 
-const drawLine = (ctx, p1, p2) => {
+const drawLine = (ctx, p1, p2, lineWidth, color) => {
     ctx.beginPath()
+    ctx.lineWidth = lineWidth
+    ctx.strokeStyle = color
     ctx.moveTo(p1.x, p1.y)
     ctx.lineTo(p2.x, p2.y)
     ctx.stroke()
 }
 
-export const drawPolygon = (canvasElement, polygonPoints, color = 'red') => {
+export const drawPoints = (canvasElement, polygonPoints, color = 'red') => {
     const ctx = canvasElement.getContext('2d')
     for (const point of polygonPoints) {
         drawCircle(ctx, point.x, point.y, color)
     }
+}
+
+export const drawPath = (canvasElement, points, lineWidth = 1, color = 'black') => {
+    const ctx = canvasElement.getContext('2d')
+    drawCircle(ctx, points[0].x, points[0].y, 'green')
+    ctx.beginPath()
+    ctx.lineWidth = lineWidth
+    ctx.strokeStyle = color
+    ctx.lineCap = 'round'
+    forEdges(points, (p1, p2) => {
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+    })
+    ctx.stroke()
 }
