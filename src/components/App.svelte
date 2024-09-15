@@ -235,36 +235,15 @@
     }
 </script>
 
-<!-- Input to go to a specific address -->
-<div>
-    <input type="text" bind:value={address} placeholder="Enter address"/>
-    <button on:click={geocodeAddress}>Go to Address</button>
-</div>
-
-<!-- Buttons to toggle drawing modes -->
-<div>
-    <button on:click={() => toggleDrawingMode('boundary')}>Draw Lawn Boundary</button>
-    <button on:click={() => toggleDrawingMode('no-step')} disabled={!lawnBoundaryDrawn}>Draw No-Step Zone</button>
-    <button on:click={clearAllPolygons}>Clear All</button>
-</div>
-
-<!-- Map display -->
-<div id="map" style="height: 400px; width: 100%;"></div>
-
-<!-- Instructions for the user -->
-<div>
-    <p>{message}</p>
-</div>
-
-<canvas bind:this={canvas}></canvas>
 <Title />
 <!-- Input to go to a specific address -->
 <div class="container">
     <div class="map-and-coordinates">
         <!-- Map display -->
         <div id="map"></div>
-
+        <div class="jokes"></div>
     </div>
+
 
     <div class="controls">
         <input type="text" bind:value={address} placeholder="Enter address" class="address-input"/>
@@ -301,6 +280,15 @@
         width: 60%;
         border: 2px solid #ddd;
         border-radius: 8px;
+    }
+
+    .jokes {
+        width: 35%;
+        text-align: left;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
     }
 
     .controls, .drawing-controls {
