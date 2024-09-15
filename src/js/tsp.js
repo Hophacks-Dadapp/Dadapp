@@ -2,8 +2,8 @@
 
 // Function to find the minimum
 // cost path for all the paths
-export const findMinRoute = (points) => {
-    const tsp = genAdjacenty(points)
+export const findMinRoute = (points, perimeterPoints) => {
+    const tsp = genAdjacenty(points, perimeterPoints)
 
 	let sum = 0;
 	let counter = 0;
@@ -78,17 +78,51 @@ export const findMinRoute = (points) => {
 }
 // This code is contributed by Pushpesh Raj.
 
-const penaltyFunction = (p1, p2) => {
-    const [dx, dy] = [p2.x - p1.x, p2.y - p2.y]
-    return dx * dx + dy * dy
+const within = (b1, b2, p) => {
+    const min = { x: Math.min(b1.x, b2.x), y: Math.min(b1.y, b2.y) }
+    const max = { x: Math.max(b1.x, b2.x), y: Math.max(b1.y, b2.y) }
+
+    return p.x >= min.x && p.x <= max.x && p.y >= min.y && p.y <= max.y
 }
 
-const genAdjacenty = (points) => {
+const penaltyFunction = (p1, p2, perimeterPoints) => {
+    const [dx, dy] = [p2.x - p1.x, p2.y - p1.y]
+    const m = dy / dx
+
+    const [a, c] = [-m, m * p1.x - p1.y]
+
+    let penalty = dx * dx + dy * dy
+
+    // penalty = Infinity if it leaves the bounds
+    const n = perimeterPoints.length
+    for (let i = 0; i < n; i++) {
+        const point = perimeterPoints[i]
+        const next = perimeterPoints[(i + 1) % n]
+
+        const [edx, edy] = [next.x - point.x, next.y - point.y]
+        const em = edy / edx
+        if (em == undefined)
+            console.log(point, next)
+        const [ea, ec] = [-em, em * point.x - point.y]
+
+        const denominator = ea - a
+        const intersect = { x: (ec - c) / denominator, y: (c * ea - ec * a) / denominator }
+
+        if (within(p1, p2, intersect) && within(point, next, intersect)) {
+            penalty = Number.MAX_SAFE_INTEGER
+            break
+        }
+    }
+
+    return penalty
+}
+
+const genAdjacenty = (points, perimeterPoints) => {
     const tsp = new Array(points.length)
     for (let i = 0; i < points.length; i++) {
         tsp[i] = new Array(points.length).fill(0)
         for (let j = 0; j < points.length; j++) {
-            tsp[i][j] = penaltyFunction(points[i], points[j])
+            tsp[i][j] = penaltyFunction(points[i], points[j], perimeterPoints)
         }
     }
     return tsp

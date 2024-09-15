@@ -33,10 +33,10 @@
 
 
     onMount(async () => {
-        jokesBox.innerText = await getDadJokes()
-        setInterval(async () => {
-            jokesBox.innerText = await getDadJokes()
-        }, 10000)
+        // jokesBox.innerText = await getDadJokes()
+        // setInterval(async () => {
+        //     jokesBox.innerText = await getDadJokes()
+        // }, 10000)
 
         try {
             // Wait for Google Maps API to load
@@ -168,7 +168,7 @@
             y: (p.lng - origin.lng) * metersPerDegreeLng
         } })
 
-        const path = findMinRoute(getTSPPoints(points, 1))
+        const path = findMinRoute(getTSPPoints(points, 1), points)
 
         const llPath = path.map(p => { return {
             lat: p.x / metersPerDegreeLat + origin.lat,
