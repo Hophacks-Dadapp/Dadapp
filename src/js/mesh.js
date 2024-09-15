@@ -1,16 +1,5 @@
 import blueNoise from "../assets/bluenoise.json"
-
 const bnPoints = blueNoise.points
-
-export const perimeterPoints = [
-    { x: 9, y: 17 },
-    { x: 21, y: 9 },
-    { x: 37, y: 18 },
-    { x: 49, y: 15 },
-    { x: 51, y: 32 },
-    { x: 31, y: 38 },
-    { x: 25, y: 23 },
-].map(p => { return { x: p.x * 8, y: p.y * 8} })
 
 const findInsetLine = (p1, p2, offsetWidth) => {
     const dx = (p2.x - p1.x), dy = (p2.y - p1.y)
@@ -22,7 +11,7 @@ const findInsetLine = (p1, p2, offsetWidth) => {
     return [ -m, 1, m * ox - oy ]
 }
 
-export const insetPoints = (perimeterPoints, offsetWidth) => {
+const insetPoints = (perimeterPoints, offsetWidth) => {
     const n = perimeterPoints.length
     let points = []
     for (let i = 0; i < n; i++) {
@@ -66,7 +55,7 @@ const forEdges = (points, func) => {
 }
 
 const isInside = (interiorPoints, point) => {
-    const n = perimeterPoints.length
+    const n = interiorPoints.length
     let intersections = 0
     forEdges(interiorPoints, (p1, p2, _) => {
         if (intersectsPoint(point, p1, p2))
@@ -130,15 +119,6 @@ const drawCircle = (ctx, x, y, color = 'red', radius = 2) => {
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
     ctx.fillStyle = color
     ctx.fill()
-}
-
-const drawLine = (ctx, p1, p2, lineWidth, color) => {
-    ctx.beginPath()
-    ctx.lineWidth = lineWidth
-    ctx.strokeStyle = color
-    ctx.moveTo(p1.x, p1.y)
-    ctx.lineTo(p2.x, p2.y)
-    ctx.stroke()
 }
 
 export const drawPoints = (canvasElement, polygonPoints, color = 'red') => {
