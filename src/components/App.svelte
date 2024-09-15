@@ -3,6 +3,8 @@
     import { Loader } from '@googlemaps/js-api-loader';
     import Title from './title.svelte';
 
+    import { getDadJokes } from '../js/getdadjokes'
+
     let map;
     let drawingManager;
     let drawingMode = 'boundary'; // 'boundary' or 'no-step'
@@ -15,6 +17,7 @@
     let lawnBoundaryDrawn = false;
     let polylines = [];
     let mowingTimeText = ''; // Store the mowing time in words
+    let jokes
 
     const mowerWidth = 0.00002; // Adjust this value for the mower's width in lat/lng
     const mowerSpeed = 1.4; // Average human walking speed pushing a mower in meters per second (m/s)
@@ -26,20 +29,30 @@
     });
 
     onMount(async () => {
+        jokes.innerText = await getDadJokes()
+        setInterval(async () => {
+            jokes.innerText = await getDadJokes()
+        }, 10000)
+
         try {
             await loader.load();
             const google = window.google;
 
             map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: 37.7749, lng: -122.4194 },
+                center: {lat: 37.7749, lng: -122.4194}, // Default center (San Francisco)
                 zoom: 18,
-                mapTypeId: google.maps.MapTypeId.SATELLITE
+                // Initial map type set to Satellite view
+                mapTypeId: google.maps.MapTypeId.SATELLITE,
+                tilt: 0,
+                rotateControl: false
             });
 
             drawingManager = new google.maps.drawing.DrawingManager({
-                map: map,
-                drawingControl: false,
-                polygonOptions: getPolygonOptions('boundary')
+                center: {lat: 37.7749, lng: -122.4194}, // Default center (San Francisco)
+                zoom: 18,
+                mapTypeId: google.maps.MapTypeId.SATELLITE,
+                tilt: 0,
+                rotateControl: false
             });
 
             google.maps.event.addListener(drawingManager, 'overlaycomplete', (event) => {
@@ -416,23 +429,7 @@
 <div class="container">
     <div class="map-and-coordinates">
         <div id="map"></div>
-        <div class="coordinates">
-            <h3>Lawn Boundary (Latitude, Longitude):</h3>
-            {#each boundaryCoordinates as coordinate}
-                <p>Lat: {coordinate.lat.toFixed(6)}, Lng: {coordinate.lng.toFixed(6)}</p>
-            {/each}
-
-            <h3>No-Step Zones (Latitude, Longitude):</h3>
-            {#each noStepZones as zone}
-                <h4>No-Step Zone:</h4>
-                {#each zone as coordinate}
-                    <p>Lat: {coordinate.lat.toFixed(6)}, Lng: {coordinate.lng.toFixed(6)}</p>
-                {/each}
-            {/each}
-
-            <h3>Estimated Mowing Time:</h3>
-            <p>{mowingTimeText}</p>
-        </div>
+        <div class="jokes" bind:this={jokes}></div>
     </div>
 
     <div class="controls">
@@ -479,7 +476,7 @@
         border-radius: 8px;
     }
 
-    .coordinates {
+    .jokes {
         width: 35%;
         text-align: left;
         padding: 10px;
