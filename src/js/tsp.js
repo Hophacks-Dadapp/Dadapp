@@ -87,32 +87,32 @@ const within = (b1, b2, p) => {
 
 const penaltyFunction = (p1, p2, perimeterPoints) => {
     const [dx, dy] = [p2.x - p1.x, p2.y - p1.y]
-    const m = dy / dx
+    // const m = dy / dx
 
-    const [a, c] = [-m, m * p1.x - p1.y]
+    // const [a, c] = [-m, m * p1.x - p1.y]
 
     let penalty = dx * dx + dy * dy
 
     // penalty = Infinity if it leaves the bounds
-    const n = perimeterPoints.length
-    for (let i = 0; i < n; i++) {
-        const point = perimeterPoints[i]
-        const next = perimeterPoints[(i + 1) % n]
+    // const n = perimeterPoints.length
+    // for (let i = 0; i < n; i++) {
+    //     const point = perimeterPoints[i]
+    //     const next = perimeterPoints[(i + 1) % n]
 
-        const [edx, edy] = [next.x - point.x, next.y - point.y]
-        const em = edy / edx
-        if (em == undefined)
-            console.log(point, next)
-        const [ea, ec] = [-em, em * point.x - point.y]
+    //     const [edx, edy] = [next.x - point.x, next.y - point.y]
+    //     const em = edy / edx
+    //     if (em == undefined)
+    //         console.log(point, next)
+    //     const [ea, ec] = [-em, em * point.x - point.y]
 
-        const denominator = ea - a
-        const intersect = { x: (ec - c) / denominator, y: (c * ea - ec * a) / denominator }
+    //     const denominator = ea - a
+    //     const intersect = { x: (ec - c) / denominator, y: (c * ea - ec * a) / denominator }
 
-        if (within(p1, p2, intersect) && within(point, next, intersect)) {
-            penalty = Number.MAX_SAFE_INTEGER
-            break
-        }
-    }
+    //     if (within(p1, p2, intersect) && within(point, next, intersect)) {
+    //         penalty = Number.MAX_SAFE_INTEGER
+    //         break
+    //     }
+    // }
 
     return penalty
 }
