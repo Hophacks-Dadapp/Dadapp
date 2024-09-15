@@ -1,6 +1,7 @@
 <script>
     import {onMount} from 'svelte';
     import {Loader} from '@googlemaps/js-api-loader';
+    import Title from './title.svelte';
 
     import { getTSPPoints } from '../js/mesh.js'
     import { findMinRoute } from '../js/tsp.js'
@@ -28,6 +29,7 @@
         version: 'weekly',
         libraries: ['drawing', 'geometry', 'places'] // Load the necessary libraries
     });
+
 
     onMount(async () => {
         try {
@@ -255,10 +257,84 @@
 </div>
 
 <canvas bind:this={canvas}></canvas>
+<Title />
+<!-- Input to go to a specific address -->
+<div class="container">
+    <div class="map-and-coordinates">
+        <!-- Map display -->
+        <div id="map"></div>
+
+    </div>
+
+    <div class="controls">
+        <input type="text" bind:value={address} placeholder="Enter address" class="address-input"/>
+        <button on:click={geocodeAddress} class="action-button">Go to Address</button>
+    </div>
+
+    <div class="drawing-controls">
+        <button on:click={() => toggleDrawingMode('boundary')} class="action-button">Draw Lawn Boundary</button>
+        <button on:click={() => toggleDrawingMode('no-step')} class="action-button" disabled={!lawnBoundaryDrawn}>Draw No-Step Zone</button>
+        <button on:click={clearAllPolygons} class="action-button">Clear All</button>
+    </div>
+
+    <div class="instructions">
+        <p>{message}</p>
+    </div>
+</div>
 
 <style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin: 20px;
+    }
+
+    .map-and-coordinates {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
     #map {
         height: 400px;
-        width: 100%;
+        width: 60%;
+        border: 2px solid #ddd;
+        border-radius: 8px;
     }
+
+    .controls, .drawing-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .address-input {
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .action-button {
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #007bff;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+
+    .action-button:disabled {
+        background-color: #ccc;
+        border-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .instructions {
+        text-align: center;
+    }
+
 </style>
