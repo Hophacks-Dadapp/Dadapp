@@ -21,7 +21,7 @@
 
     // Initialize Google Maps loader with your API key
     const loader = new Loader({
-        apiKey: 'AIzaSyDGQHZVLc3VvgZpSPF47uNF1CHJFEUvr68', // Replace with your actual API key
+        apiKey: 'Your API Key', // Replace with your actual API key
         version: 'weekly',
         libraries: ['drawing', 'geometry', 'places'] // Load the necessary libraries
     });
