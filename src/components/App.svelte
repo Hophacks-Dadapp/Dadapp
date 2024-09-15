@@ -33,10 +33,10 @@
 
 
     onMount(async () => {
-        // jokesBox.innerText = await getDadJokes()
-        // setInterval(async () => {
-        //     jokesBox.innerText = await getDadJokes()
-        // }, 10000)
+        jokesBox.innerText = await getDadJokes()
+        setInterval(async () => {
+            jokesBox.innerText = await getDadJokes()
+        }, 10000)
 
         try {
             // Wait for Google Maps API to load
