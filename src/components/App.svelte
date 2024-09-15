@@ -161,28 +161,53 @@
     function convertLatLngToXY(coordinates, type) {
         if (coordinates.length === 0 || !boundaryBounds) return;
 
-        const minLat = boundaryBounds.getSouthWest().lat();
-        const minLng = boundaryBounds.getSouthWest().lng();
+        const origin = coordinates[0]
 
-        const maxLat = boundaryBounds.getNorthEast().lat();
-        const maxLng = boundaryBounds.getNorthEast().lng();
+        const points = coordinates.map(p => { return {
+            x: (p.lat - origin.lat) * metersPerDegreeLat,
+            y: (p.lng - origin.lng) * metersPerDegreeLng
+        } })
 
-        const width = (maxLng - minLng) * metersPerDegreeLng;
-        const height = (maxLat - minLat) * metersPerDegreeLat;
+        const path = findMinRoute(getTSPPoints(points, 1))
 
-        const convertedCoordinates = coordinates.map(point => ({
-            x: ((point.lng - minLng) / (maxLng - minLng)) * width, // Normalize and scale to boundary width
-            y: ((point.lat - minLat) / (maxLat - minLat)) * height // Normalize and scale to boundary height
-        }));
+        const llPath = path.map(p => { return {
+            lat: p.x / metersPerDegreeLat + origin.lat,
+            lng: p.y / metersPerDegreeLng + origin.lng
+        }})
 
-        if (type === 'boundary') {
-            boundaryCoordinates = convertedCoordinates;
-            // these are the path coordinates
-            const path = getTSPPoints(boundaryCoordinates, 1)
+        new window.google.maps.Polyline({
+            path: llPath
+        }).setMap(map)
 
-        } else if (type === 'no-step') {
-            noStepZones = [...noStepZones, convertedCoordinates];
-        }
+        // const minLat = boundaryBounds.getSouthWest().lat();
+        // const minLng = boundaryBounds.getSouthWest().lng();
+
+        // const maxLat = boundaryBounds.getNorthEast().lat();
+        // const maxLng = boundaryBounds.getNorthEast().lng();
+
+        // const width = (maxLng - minLng) * metersPerDegreeLng;
+        // const height = (maxLat - minLat) * metersPerDegreeLat;
+
+        // const convertedCoordinates = coordinates.map(point => ({
+        //     x: ((point.lng - minLng) / (maxLng - minLng)) * width, // Normalize and scale to boundary width
+        //     y: ((point.lat - minLat) / (maxLat - minLat)) * height // Normalize and scale to boundary height
+        // }));
+
+        // if (type === 'boundary') {
+        //     boundaryCoordinates = convertedCoordinates;
+        //     // these are the path coordinates
+
+        //     const path = getTSPPoints(boundaryCoordinates, 1)
+
+        //     console.log(convertedCoordinates)
+
+        // } else if (type === 'no-step') {
+        //     noStepZones = [...noStepZones, convertedCoordinates];
+        // }
+    }
+
+    function xyToLatLng(points) {
+
     }
 
     // Function to toggle between boundary and no-step zone drawing modes
